@@ -1,8 +1,8 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/cat/Documents/FLUTTER/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/cat/Documents/Software II/flutter_authentication_lab"
-export "FLUTTER_TARGET=/Users/cat/Documents/Software II/flutter_authentication_lab/lib/main.dart"
+export "FLUTTER_APPLICATION_PATH=/Users/cat/Documents/Software II/swe_signin"
+export "FLUTTER_TARGET=/Users/cat/Documents/Software II/swe_signin/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
 export "FLUTTER_FRAMEWORK_DIR=/Users/cat/Documents/FLUTTER/flutter/bin/cache/artifacts/engine/ios"
