@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Registration.dart';
 import 'Listpage.dart';
+import 'models.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -26,6 +28,8 @@ class MyApp extends StatelessWidget {
 class LoginScreen extends StatelessWidget {
   TextEditingController usernameCtrl = TextEditingController();
   TextEditingController passwordCtrl = TextEditingController();
+
+ 
 
   Future<String> login(String username, String password) async {
     //try to login to https://sleepy-hamlet-97922.herokuapp.com/api/login
@@ -51,6 +55,28 @@ class LoginScreen extends StatelessWidget {
     if (response.statusCode == 201) {
     } else {
       print(response.body);
+    }
+  }
+
+  Future<List<dynamic>> getdata(String token) async {
+    //try to retrieve secret
+    //set HttpHeaders.authorizationHeader to Bearer token
+    var response = await http.get(
+      'https://sleepy-hamlet-97922.herokuapp.com/todo_items',
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+
+      List<TodoItem> items = [];
+      for (int i = 0; i < data.length; i++) {
+        items.add(TodoItem.fromJson(data[i]));
+      }
+      return items;
+      
+    } else {
+      print(response.statusCode);
+      return null;
     }
   }
 
@@ -88,11 +114,11 @@ class LoginScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(),
             child: Text(
               "TODO-LIST",
-              style: TextStyle(color: Colors.white,
-              fontSize: 50,
-              fontWeight: FontWeight.bold,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
               ),
-              
             ),
           ),
           Padding(
@@ -101,7 +127,7 @@ class LoginScreen extends StatelessWidget {
               controller: usernameCtrl,
               decoration: InputDecoration(
                 labelText: 'Email: ',
-               labelStyle: TextStyle(color: Color(0xFFEFB367), fontSize: 20),
+                labelStyle: TextStyle(color: Color(0xFFEFB367), fontSize: 20),
                 contentPadding: EdgeInsets.symmetric(vertical: 25),
               ),
             ),
@@ -120,67 +146,66 @@ class LoginScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 250),
             child: RaisedButton(
-              child: Text("Sign in",
-              style: TextStyle(color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ), 
+              child: Text(
+                "Sign in",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0)),
               color: Color(0xFFEFB367),
               onPressed: () async {
                 //Try to login and retrieve token
-                String token = await login(usernameCtrl.text, passwordCtrl.text);
+                String token =
+                    await login(usernameCtrl.text, passwordCtrl.text);
 
                 //if token is valid
                 if (token != null) {
                   //try to fetch the secret info
                   String secret = await getSecretMessage(token);
-
+                  List<TodoItem> data = await getdata(token);
+                  
                   //if successfully retrieved
                   if (secret != null) {
                     //navigate to MainScreen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Listpage()),
+                      MaterialPageRoute(builder: (context) => Listpage(data, token)),
                     );
                   }
                 }
               },
             ),
           ),
-         
           new Container(
-          
             child: RaisedButton(
-              child: Text("Register",
-              style: TextStyle(color: Color(0xFFEFB367),
+              child: Text(
+                "Register",
+                style: TextStyle(
+                  color: Color(0xFFEFB367),
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,),
-                  ),
-                 
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                  color: Color(0xffEFB367).withOpacity(0.2),
-                  
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+              color: Color(0xffEFB367).withOpacity(0.2),
               onPressed: () {
                 //navigate to
                 //MainScreen("Secret constructor message")
                 register(usernameCtrl.text, passwordCtrl.text);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => RegistrationPage()),
+                  MaterialPageRoute(builder: (context) => RegistrationPage()),
                 );
               },
             ),
           )
         ],
-
-       
       ),
     );
-
-   
   }
 }
 

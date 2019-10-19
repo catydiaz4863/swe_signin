@@ -1,3 +1,4 @@
+import 'package:authentication_lab/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Listpage.dart';
@@ -65,10 +66,12 @@ class RegistrationPage extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
               color: Color(0xFF244454),
               onPressed: () async {
+
               register(usernameCtrl.text, passwordCtrl.text);
+            
               Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Listpage()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
               },
             ),
